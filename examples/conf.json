@@ -1,0 +1,68 @@
+{
+    "global": {
+        "logger": {
+            "enableDebug": true
+        }
+    },
+    "settings": {
+        "sessionPersistenceDetails": {
+            "cookieName": null,
+            "cookieSettings": [
+                "HttpOnly",
+                "SameSite=Strict"
+            ]
+        },
+        "healthCheckInterval": "5s",
+        "bindings": [
+            {
+                "address": "localhost:4545",
+                "protocol": "HTTP/3",
+                "ssl": [
+                    {
+                        "certFileName": "server.crt",
+                        "keyFileName": "server.key"
+                    }
+                ],
+                "virtualHost": true,
+                "groups": [
+                    {
+                        "address": "localhost",
+                        "path": "/example/",
+                        "algorithm": "roundrobin",
+                        "sessionPersistence": true,
+                        "endpoints": [
+                            {
+                                "address": "http://localhost:3001",
+                                "proxyPass": "http://localhost:3001"
+                            },
+                            {
+                                "address": "http://localhost:3002",
+                                "proxyPass": "http://localhost:3002"
+                            },
+                            {
+                                "address": "http://localhost:3003",
+                                "proxyPass": "http://localhost:3003"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "address": "localhost:2999",
+                "virtualHost": false,
+                "groups": [
+                    {
+                        "sessionPersistence": false,
+                        "path": "/example/",
+                        "endpoints": [
+                            {
+                                "address": "https://www.acme.org/",
+                                "proxyPass": "https://www.acme.org/context/"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
